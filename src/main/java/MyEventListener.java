@@ -138,5 +138,4 @@ public class MyEventListener extends ListenerAdapter{
 
         channel.sendMessage("Skipped to next track.").queue();
     }
-
 }
