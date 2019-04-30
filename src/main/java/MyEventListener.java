@@ -62,7 +62,7 @@ public class MyEventListener extends ListenerAdapter{
         Guild guild = event.getGuild();
 
         if (guild != null) {
-            if ("!play".equals(command[0]) && command.length == 2) {
+            if ("$play".equals(command[0]) && command.length == 2) {
                 VoiceChannel voiceChannel  = event.getMember().getVoiceState().getChannel();
 
                 if(voiceChannel == null) { //check if the author is currently connected to a voice channel
@@ -72,9 +72,9 @@ public class MyEventListener extends ListenerAdapter{
                 }
 
                 loadAndPlay(channel, voiceChannel, command[1]); // play music from source
-            } else if ("!skip".equals(command[0])) {
+            } else if ("$skip".equals(command[0])) {
                 skipTrack(channel);
-            } else if ("!quit".equals(command[0])) {
+            } else if ("$quit".equals(command[0])) {
                 VoiceChannel connectedChannel = event.getGuild().getSelfMember().getVoiceState().getChannel();
                 // Checks if the bot is connected to a voice channel.
                 if(connectedChannel == null) {
@@ -82,10 +82,8 @@ public class MyEventListener extends ListenerAdapter{
                     channel.sendMessage("I am not connected to a voice channel!").queue();
                     return;
                 }
-                // Disconnect from the channel.
-                event.getGuild().getAudioManager().closeAudioConnection();
-                // Notify the user.
-                channel.sendMessage("Disconnected from the voice channel!").queue();
+
+                quit(event.getGuild(), channel);
             }
         }
     }
@@ -137,5 +135,15 @@ public class MyEventListener extends ListenerAdapter{
         musicManager.scheduler.nextTrack();
 
         channel.sendMessage("Skipped to next track.").queue();
+    }
+
+    private void quit(Guild guild, TextChannel channel) {
+        GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+        // Disconnect from the channel.
+        guild.getAudioManager().closeAudioConnection();
+        // Notify the user.
+        channel.sendMessage("Disconnected from the voice channel!").queue();
+        musicManager.scheduler.clearQueue();
+        musicManager.scheduler.nextTrack();
     }
 }
