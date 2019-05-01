@@ -155,7 +155,7 @@ public class CommandListener extends ListenerAdapter{
                 {
                     event.getChannel().sendMessage("No track has been previously started, so the player cannot replay a track!").queue();
                 }
-            } else if (".repeat".equals(command[0])) {
+            } else if ("$repeat".equals(command[0])) {
                 scheduler.setRepeating(!scheduler.isRepeating());
                 event.getChannel().sendMessage("Player was set to: **" + (scheduler.isRepeating() ? "repeat" : "not repeat") + "**").queue();
             }
