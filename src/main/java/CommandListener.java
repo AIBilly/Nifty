@@ -3,6 +3,13 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.vimeo.VimeoAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -15,14 +22,23 @@ import net.dv8tion.jda.core.managers.AudioManager;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MyEventListener extends ListenerAdapter{
+public class CommandListener extends ListenerAdapter{
     private final AudioPlayerManager playerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
 
-    public MyEventListener(){
+    public CommandListener(){
         this.musicManagers = new HashMap<>();
 
         this.playerManager = new DefaultAudioPlayerManager();
+
+        playerManager.registerSourceManager(new YoutubeAudioSourceManager());
+        playerManager.registerSourceManager(new SoundCloudAudioSourceManager());
+        playerManager.registerSourceManager(new BandcampAudioSourceManager());
+        playerManager.registerSourceManager(new VimeoAudioSourceManager());
+        playerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
+        playerManager.registerSourceManager(new HttpAudioSourceManager());
+        playerManager.registerSourceManager(new LocalAudioSourceManager());
+
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
     }
@@ -48,7 +64,9 @@ public class MyEventListener extends ListenerAdapter{
         String content = message.getContentRaw();
         MessageChannel channel = event.getChannel();
 
-        if (content.startsWith("!ping")) {
+        if (content.startsWith("$ping")) {
+            channel.sendMessage("Pong " + event.getJDA().getPing() + "ms").queue();
+        } else if (content.startsWith("$Jerry")) {
             channel.sendMessage("Pong " + event.getJDA().getPing() + "ms").queue();
         }
     }
@@ -62,6 +80,9 @@ public class MyEventListener extends ListenerAdapter{
         Guild guild = event.getGuild();
 
         if (guild != null) {
+            GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
+            AudioPlayer player = musicManager.player;
+
             if ("$play".equals(command[0]) && command.length == 2) {
                 VoiceChannel voiceChannel  = event.getMember().getVoiceState().getChannel();
 
@@ -84,6 +105,22 @@ public class MyEventListener extends ListenerAdapter{
                 }
 
                 quit(event.getGuild(), channel);
+            } else if ("$nowplaying".equals(command[0]) || "$np".equals(command[0]))
+            {
+                AudioTrack currentTrack = player.getPlayingTrack();
+                if (currentTrack != null)
+                {
+                    String title = currentTrack.getInfo().title;
+                    String position = getTimestamp(currentTrack.getPosition());
+                    String duration = getTimestamp(currentTrack.getDuration());
+
+                    String nowplaying = String.format("**Playing:** %s\n**Time:** [%s / %s]",
+                            title, position, duration);
+
+                    channel.sendMessage(nowplaying).queue();
+                }
+                else
+                    channel.sendMessage("The player is not currently playing anything!").queue();
             }
         }
     }
@@ -145,5 +182,17 @@ public class MyEventListener extends ListenerAdapter{
         channel.sendMessage("Disconnected from the voice channel!").queue();
         musicManager.scheduler.clearQueue();
         musicManager.scheduler.nextTrack();
+    }
+
+    private String getTimestamp(long milliseconds)
+    {
+        int seconds = (int) (milliseconds / 1000) % 60 ;
+        int minutes = (int) ((milliseconds / (1000 * 60)) % 60);
+        int hours   = (int) ((milliseconds / (1000 * 60 * 60)) % 24);
+
+        if (hours > 0)
+            return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        else
+            return String.format("%02d:%02d", minutes, seconds);
     }
 }
