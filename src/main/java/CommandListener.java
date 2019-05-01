@@ -17,7 +17,6 @@ import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.managers.AudioManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +81,7 @@ public class CommandListener extends ListenerAdapter{
         if (guild != null) {
             GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
             AudioPlayer player = musicManager.player;
+            TrackScheduler scheduler = musicManager.scheduler;
 
             if ("$play".equals(command[0]) && command.length == 2) {
                 VoiceChannel voiceChannel  = event.getMember().getVoiceState().getChannel();
@@ -105,8 +105,7 @@ public class CommandListener extends ListenerAdapter{
                 }
 
                 quit(event.getGuild(), channel);
-            } else if ("$nowplaying".equals(command[0]) || "$np".equals(command[0]))
-            {
+            } else if ("$nowplaying".equals(command[0]) || "$np".equals(command[0])) {
                 AudioTrack currentTrack = player.getPlayingTrack();
                 if (currentTrack != null)
                 {
@@ -121,6 +120,44 @@ public class CommandListener extends ListenerAdapter{
                 }
                 else
                     channel.sendMessage("The player is not currently playing anything!").queue();
+            } else if ("$pause".equals(command[0])) {
+                if (player.getPlayingTrack() == null)
+                {
+                    event.getChannel().sendMessage("Cannot pause or resume player because no track is loaded for playing.").queue();
+                    return;
+                }
+
+                player.setPaused(!player.isPaused());
+                if (player.isPaused())
+                    channel.sendMessage("The player has been paused.").queue();
+                else
+                    channel.sendMessage("The player has resumed playing.").queue();
+            } else if ("$shuffle".equals(command[0])) {
+                if (scheduler.getQueue().isEmpty())
+                {
+                    event.getChannel().sendMessage("The queue is currently empty!").queue();
+                    return;
+                }
+
+                scheduler.shuffle();
+                event.getChannel().sendMessage("The queue has been shuffled!").queue();
+            } else if ("$restart".equals(command[0])) {
+                AudioTrack track = player.getPlayingTrack();
+                if (track == null)
+                    track = scheduler.lastTrack;
+
+                if (track != null)
+                {
+                    event.getChannel().sendMessage("Restarting track: " + track.getInfo().title).queue();
+                    player.playTrack(track.makeClone());
+                }
+                else
+                {
+                    event.getChannel().sendMessage("No track has been previously started, so the player cannot replay a track!").queue();
+                }
+            } else if (".repeat".equals(command[0])) {
+                scheduler.setRepeating(!scheduler.isRepeating());
+                event.getChannel().sendMessage("Player was set to: **" + (scheduler.isRepeating() ? "repeat" : "not repeat") + "**").queue();
             }
         }
     }
