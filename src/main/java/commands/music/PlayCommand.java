@@ -36,12 +36,10 @@ public class PlayCommand extends MusicCommand {
             return;
         }
 
-        try
-        {
+        try {
             event.getGuild().getAudioManager().openAudioConnection(userState.getChannel());
         }
-        catch(PermissionException ex)
-        {
+        catch(PermissionException ex) {
             event.reply(event.getClient().getError()+" I am unable to connect to **"+userState.getChannel().getName()+"**!");
             return;
         }

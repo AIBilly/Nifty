@@ -18,8 +18,7 @@ public class ShuffleCommand extends MusicCommand {
         GuildMusicManager musicManager = audioManager.getGuildAudioPlayer(event.getGuild());
         TrackScheduler scheduler = musicManager.scheduler;
 
-        if (scheduler.getQueue().isEmpty())
-        {
+        if (scheduler.getQueue().isEmpty()) {
             event.getChannel().sendMessage("The queue is currently empty!").queue();
             return;
         }

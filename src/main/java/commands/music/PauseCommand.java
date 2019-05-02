@@ -18,8 +18,7 @@ public class PauseCommand extends MusicCommand {
         GuildMusicManager musicManager = audioManager.getGuildAudioPlayer(event.getGuild());
         AudioPlayer player = musicManager.player;
 
-        if (player.getPlayingTrack() == null)
-        {
+        if (player.getPlayingTrack() == null) {
             event.replyError("Cannot pause or resume player because no track is loaded for playing.");
             return;
         }

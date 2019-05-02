@@ -25,13 +25,11 @@ public class RestartCommand extends MusicCommand {
         if (track == null)
             track = scheduler.getLastTrack();
 
-        if (track != null)
-        {
+        if (track != null) {
             event.replySuccess("Restarting track: " + track.getInfo().title);
             player.playTrack(track.makeClone());
         }
-        else
-        {
+        else {
             event.replyError("No track has been previously started, so the player cannot replay a track!");
         }
     }

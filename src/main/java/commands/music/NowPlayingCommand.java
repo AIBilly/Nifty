@@ -21,8 +21,7 @@ public class NowPlayingCommand extends MusicCommand {
         AudioPlayer player = musicManager.player;
 
         AudioTrack currentTrack = player.getPlayingTrack();
-        if (currentTrack != null)
-        {
+        if (currentTrack != null) {
             String title = currentTrack.getInfo().title;
             String position = audioManager.getTimestamp(currentTrack.getPosition());
             String duration = audioManager.getTimestamp(currentTrack.getDuration());

@@ -17,23 +17,18 @@ public class ListCommand extends MusicCommand {
     @Override
     public void doCommand(CommandEvent event) {
         Queue<AudioTrack> queue = audioManager.getGuildAudioPlayer(event.getGuild()).scheduler.getQueue();
-        synchronized (queue)
-        {
-            if (queue.isEmpty())
-            {
+        synchronized (queue) {
+            if (queue.isEmpty()) {
                 event.getChannel().sendMessage("The queue is currently empty!").queue();
             }
-            else
-            {
+            else {
                 int trackCount = 0;
                 long queueLength = 0;
                 StringBuilder sb = new StringBuilder();
                 sb.append("Current Queue: Entries: ").append(queue.size()).append("\n");
-                for (AudioTrack track : queue)
-                {
+                for (AudioTrack track : queue) {
                     queueLength += track.getDuration();
-                    if (trackCount < 10)
-                    {
+                    if (trackCount < 10) {
                         sb.append("`[").append(audioManager.getTimestamp(track.getDuration())).append("]` ");
                         sb.append(track.getInfo().title).append("\n");
                         trackCount++;
