@@ -12,6 +12,8 @@ import net.dv8tion.jda.core.entities.GuildVoiceState;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 
+import java.util.List;
+
 public class PlayCommand extends MusicCommand {
     public PlayCommand(AudioManager audioManager) {
         super(audioManager);
@@ -59,7 +61,28 @@ public class PlayCommand extends MusicCommand {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
+                List<AudioTrack> tracks = playlist.getTracks();
+
+                if (tracks == null) {
+                    event.replyError("No track found from the playlist!");
+                    return;
+                }
+
+                if (tracks.size() == 0) {
+                    event.replyError("No track found from the playlist!");
+                    return;
+                }
+
+                StringBuilder sb = new StringBuilder();
+                for (AudioTrack track : tracks) {
+                    sb.append("Adding to queue ").append(track.getInfo().title).append(" of playlist ").append(playlist.getName()).append("\n");
+                    musicManager.scheduler.queue(track);
+                }
+
+                sb.append(tracks.size()).append("\n tracks added.");
+
+                event.replySuccess(sb.toString());
+                /*AudioTrack firstTrack = playlist.getSelectedTrack();
 
                 if (firstTrack == null) {
                     firstTrack = playlist.getTracks().get(0);
@@ -67,7 +90,7 @@ public class PlayCommand extends MusicCommand {
 
                 event.replySuccess("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")");
 
-                musicManager.scheduler.queue(firstTrack);
+                musicManager.scheduler.queue(firstTrack);*/
             }
 
             @Override

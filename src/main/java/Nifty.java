@@ -44,7 +44,8 @@ public class Nifty {
                             new PauseCommand(audioManager),
                             new ShuffleCommand(audioManager),
                             new RepeatCommand(audioManager),
-                            new RestartCommand(audioManager));
+                            new RestartCommand(audioManager),
+                            new ListCommand(audioManager));
 
         JDA jda = new JDABuilder(AccountType.BOT)
                 // set the token
