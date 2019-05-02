@@ -1,3 +1,5 @@
+package audio;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -15,7 +17,7 @@ public class TrackScheduler extends AudioEventAdapter {
     private boolean repeating = false;
     private final AudioPlayer player;
     private final BlockingQueue<AudioTrack> queue;
-    AudioTrack lastTrack;
+    private AudioTrack lastTrack;
 
     /**
      * @param player The audio player this scheduler uses
@@ -90,5 +92,9 @@ public class TrackScheduler extends AudioEventAdapter {
     public void shuffle()
     {
         Collections.shuffle((List<?>) queue);
+    }
+
+    public AudioTrack getLastTrack() {
+        return lastTrack;
     }
 }

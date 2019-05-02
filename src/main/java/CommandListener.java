@@ -1,3 +1,5 @@
+import audio.GuildMusicManager;
+import audio.TrackScheduler;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -144,7 +146,7 @@ public class CommandListener extends ListenerAdapter{
             } else if ("$restart".equals(command[0])) {
                 AudioTrack track = player.getPlayingTrack();
                 if (track == null)
-                    track = scheduler.lastTrack;
+                    track = scheduler.getLastTrack();
 
                 if (track != null)
                 {
