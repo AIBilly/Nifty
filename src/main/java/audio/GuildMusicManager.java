@@ -1,3 +1,9 @@
+/*
+ * Developed by Billy Hu on 4/25/19 4:25 PM.
+ * Last modified 5/1/19 8:52 AM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 package audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;

@@ -1,3 +1,9 @@
+/*
+ * Developed by Billy Hu on 5/1/19 0:14 AM.
+ * Last modified 5/1/19 7:07 AM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 public class Config {
     private String token;
     private String ownerID;

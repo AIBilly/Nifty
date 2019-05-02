@@ -1,8 +1,13 @@
+/*
+ * Developed by Billy Hu on 5/1/19 10:35 AM.
+ * Last modified 5/2/19 4:32 PM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 package commands.music;
 
 import audio.AudioManager;
 import audio.GuildMusicManager;
-import audio.TrackScheduler;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;

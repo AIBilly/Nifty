@@ -1,3 +1,9 @@
+/*
+ * Developed by Billy Hu on 5/1/19 9:46 AM.
+ * Last modified 5/1/19 8:50 PM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 package commands.music;
 
 import audio.AudioManager;

@@ -1,3 +1,9 @@
+/*
+ * Developed by Billy Hu on 5/1/19 0:14 AM.
+ * Last modified 5/1/19 6:25 PM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 import audio.GuildMusicManager;
 import audio.TrackScheduler;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;

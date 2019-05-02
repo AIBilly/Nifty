@@ -1,3 +1,9 @@
+/*
+ * Developed by Billy Hu on 4/25/19 4:25 PM PM.
+ * Last modified 5/1/19 10:00 PM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 import audio.AudioManager;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;

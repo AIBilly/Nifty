@@ -1,3 +1,9 @@
+/*
+ * Developed by Billy Hu on 5/1/19 7:10 AM.
+ * Last modified 5/1/19 8:27 AM.
+ * Copyright (c) 2019. All rights reserved.
+ */
+
 package commands.amusement;
 
 import com.jagrosh.jdautilities.command.Command;
