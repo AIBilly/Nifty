@@ -15,12 +15,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import commands.MusicCommand;
 import net.dv8tion.jda.core.entities.GuildVoiceState;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 
-import java.util.List;
-
 public class PlayCommand extends MusicCommand {
+    protected String searchPrefix = "ytsearch:";
+    protected GuildMusicManager musicManager;
+
     public PlayCommand(AudioManager audioManager) {
         super(audioManager);
         this.name = "play";
@@ -30,6 +32,12 @@ public class PlayCommand extends MusicCommand {
 
     @Override
     public void doCommand(CommandEvent event) {
+        if(event.getArgs().isEmpty())
+        {
+            event.replyError("Please include a query.");
+            return;
+        }
+
         GuildVoiceState userState = event.getMember().getVoiceState();
         VoiceChannel voiceChannel = userState.getChannel();
 
@@ -50,64 +58,54 @@ public class PlayCommand extends MusicCommand {
             return;
         }
 
-        GuildMusicManager musicManager = audioManager.getGuildAudioPlayer(event.getGuild());
+        musicManager = audioManager.getGuildAudioPlayer(event.getGuild());
 
+        event.reply(" Searching... `["+event.getArgs()+"]`",
+                message -> audioManager.getPlayerManager().loadItemOrdered(event.getGuild(), event.getArgs(), new ResultHandler(message, event, false)));
+    }
 
-        final String trackUrl = event.getArgs();
+    private class ResultHandler implements AudioLoadResultHandler {
+        private final Message message;
+        private final CommandEvent event;
+        private final boolean isSearch;
 
-        audioManager.getPlayerManager().loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                event.replySuccess("Adding to queue " + track.getInfo().title);
+        private ResultHandler(Message m, CommandEvent event, boolean isSearch)
+        {
+            this.message = m;
+            this.event = event;
+            this.isSearch = isSearch;
+        }
 
-                musicManager.scheduler.queue(track);
+        @Override
+        public void trackLoaded(AudioTrack track) {
+            event.replySuccess("Adding to queue " + track.getInfo().title);
+            musicManager.scheduler.queue(track);
+        }
+
+        @Override
+        public void playlistLoaded(AudioPlaylist playlist) {
+            AudioTrack firstTrack = playlist.getSelectedTrack();
+
+            if (firstTrack == null) {
+                firstTrack = playlist.getTracks().get(0);
             }
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                List<AudioTrack> tracks = playlist.getTracks();
+            event.replySuccess("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")");
 
-                if (tracks == null) {
-                    event.replyError("No track found from the playlist!");
-                    return;
-                }
+            musicManager.scheduler.queue(firstTrack);
+        }
 
-                if (tracks.size() == 0) {
-                    event.replyError("No track found from the playlist!");
-                    return;
-                }
+        @Override
+        public void noMatches() {
+            if (isSearch)
+                event.replyError("Nothing found by " + event.getArgs());
+            else
+                audioManager.getPlayerManager().loadItemOrdered(event.getGuild(), searchPrefix + event.getArgs(), new ResultHandler(message, event, true));
+        }
 
-                StringBuilder sb = new StringBuilder();
-                for (AudioTrack track : tracks) {
-                    sb.append("Adding to queue ").append(track.getInfo().title).append(" of playlist ").append(playlist.getName()).append("\n");
-                    musicManager.scheduler.queue(track);
-                }
-
-                sb.append(tracks.size()).append("\n tracks added.");
-
-                event.replySuccess(sb.toString());
-                /*AudioTrack firstTrack = playlist.getSelectedTrack();
-
-                if (firstTrack == null) {
-                    firstTrack = playlist.getTracks().get(0);
-                }
-
-                event.replySuccess("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")");
-
-                musicManager.scheduler.queue(firstTrack);*/
-            }
-
-            @Override
-            public void noMatches() {
-                event.replyError("Nothing found by " + trackUrl);
-            }
-
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                event.replyError("Could not play: " + exception.getMessage());
-            }
-
-        });
-        System.out.println(musicManager.scheduler.getQueue().size());
+        @Override
+        public void loadFailed(FriendlyException exception) {
+            event.replyError("Could not play: " + exception.getMessage());
+        }
     }
 }
