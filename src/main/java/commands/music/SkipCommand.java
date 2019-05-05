@@ -24,6 +24,5 @@ public class SkipCommand extends MusicCommand {
         musicManager.scheduler.nextTrack();
 
         event.replySuccess("Skipped to next track.");
-        System.out.println(musicManager.scheduler.getQueue().size());
     }
 }

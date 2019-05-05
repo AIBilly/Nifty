@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.exceptions.PermissionException;
 
 public abstract class AmusementCommand extends Command {
     public AmusementCommand() {
-        this.guildOnly = true;
+        //this.guildOnly = true;
         this.category = new Category("Amusement");
     }
 
@@ -27,11 +27,11 @@ public abstract class AmusementCommand extends Command {
             } catch (PermissionException ignore) {
             }
             event.replyInDm("You must enter commands in a text channel!");
-            Guild guild = event.getGuild();
+        }
+        Guild guild = event.getGuild();
 
-            if (guild != null) {
-                doCommand(event);
-            }
+        if (guild != null) {
+            doCommand(event);
         }
     }
 
