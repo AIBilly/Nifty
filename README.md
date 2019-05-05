@@ -1,5 +1,5 @@
 # Nifty
-A music bot based on JDA, JDA-utilities and lavaplayer.
+A discord music bot based on JDA, JDA-utilities and lavaplayer.
 
 Nifty commands:
 
