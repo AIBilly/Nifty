@@ -6,19 +6,19 @@
 
 package commands.amusement;
 
-import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.async.Callback;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import commands.AmusementCommand;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 
 import java.awt.*;
 
-public class CatCommand extends Command {
+public class CatCommand extends AmusementCommand {
     public CatCommand() {
         this.name = "cat";
         this.help = "show a random cat";
@@ -26,7 +26,7 @@ public class CatCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    public void doCommand(CommandEvent event) {
         if(event.getAuthor().isBot())
             return;
         // use Unirest to poll an API

@@ -46,7 +46,6 @@ public class TrackScheduler extends AudioEventAdapter {
         if (!player.startTrack(track, true)) {
             queue.offer(track);
         }
-        System.out.println(queue.size());
     }
 
     /**
@@ -56,7 +55,6 @@ public class TrackScheduler extends AudioEventAdapter {
         // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
         // giving null to startTrack, which is a valid argument and will simply stop the player.
         player.startTrack(queue.poll(), false);
-        System.out.println(queue.size());
     }
 
     /**
@@ -64,7 +62,6 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     public void clearQueue() {
         queue.clear();
-        System.out.println(queue.size());
     }
 
     /**

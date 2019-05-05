@@ -44,6 +44,7 @@ public class Nifty {
 
         client.addCommands(new CatCommand(),
                             new PlayCommand(audioManager),
+                            new PlayAllCommand(audioManager),
                             new QuitCommand(audioManager),
                             new SkipCommand(audioManager),
                             new NowPlayingCommand(audioManager),

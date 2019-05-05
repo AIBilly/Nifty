@@ -27,7 +27,7 @@ public class PlayCommand extends MusicCommand {
         super(audioManager);
         this.name = "play";
         this.arguments = "<title|URL|subcommand>";
-        this.help = "plays the provided song";
+        this.help = "plays the provided track";
     }
 
     @Override
