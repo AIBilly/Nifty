@@ -4,6 +4,9 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
+import java.io.File;
+import java.util.Scanner;
+
 public class Config {
     private String token;
     private String ownerID;
@@ -13,7 +16,17 @@ public class Config {
     private String errorEmoji;
 
     public Config() {
-        this.token = "NTcwNzIyODcyODMwNDU5OTY0.XMFYAA.PCJKgBN79a8iiahGTE36tgCmlqA";
+        try {
+            File file = new File("./src/main/resources/config.txt");
+            Scanner input = new Scanner(file);
+
+            this.token =  input.next();
+
+            input.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         this.ownerID = "349253106699075594";
         this.prefix = "$";
         this.successEmoji = "\uD83D\uDE03";
