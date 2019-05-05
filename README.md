@@ -1,5 +1,5 @@
 # Nifty
-A music bot based on JDA and JDA-utilities. Will add karaoke function in future.
+A music bot based on JDA, JDA-utilities and lavaplayer.
 
 Nifty commands:
 
