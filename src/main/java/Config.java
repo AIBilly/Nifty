@@ -4,7 +4,11 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Scanner;
 
 public class Config {
@@ -17,12 +21,24 @@ public class Config {
 
     public Config() {
         try {
-            File file = new File("./src/main/resources/config.txt");
+            InputStream is = this.getClass().getResourceAsStream("config.txt");
+            if (is == null)
+                System.out.println("No file found!");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+            String s = br.readLine();
+            s = s.replaceAll("\r|\n", "");
+
+            this.token =  s;
+
+            /*String path = this.getClass().getResource("config.txt").getPath();
+            path = java.net.URLDecoder.decode(path, "UTF-8");
+            File file = new File(path);
             Scanner input = new Scanner(file);
 
             this.token =  input.next();
 
-            input.close();
+            input.close();*/
 
         } catch (Exception ex) {
             ex.printStackTrace();
