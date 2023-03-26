@@ -20,4 +20,4 @@ $repeat - set player to repeating<br>
 $restart - if playing, replay current track, if not playing, replay the previous track<br>
 $list - show the current queue<br>
 
-For additional help, contact CodeBilly#9616
+For additional help, contact CodeBilly#6467
